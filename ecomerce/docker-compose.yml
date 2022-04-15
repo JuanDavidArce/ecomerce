@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  django:
+
+    build:
+      context: .
+      dockerfile: ./DockerFiles/Django/Dockerfile
+      
+    image: django
+
+    env_file:
+      - ./.envs/.django
+      - ./.envs/.postgres
+
+    volumes:
+      - .:/app
+
+    ports:
+      - 8000:8000
+
+    depends_on:
+      - db
+        
+    
+    command: /bin/sh -c "
+      while ! nc -z db 5432; do sleep 1 && echo 'waiting database'; done;
+      python3 manage.py makemigrations;
+      python3 manage.py migrate;
+      python3 manage.py runserver 0.0.0.0:8000"
+    
+    restart: always
+    
+
+  db:
+    build:
+      context: .
+      dockerfile: ./DockerFiles/Postgres/Dockerfile
+
+    image: db
+
+    env_file:
+      - ./.envs/.postgres
+
+    volumes:
+      - './postgres_data:/var/lib/postgresql/data'
+
+    restart: always
+  
