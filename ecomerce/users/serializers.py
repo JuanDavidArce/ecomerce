@@ -12,6 +12,7 @@ from users.models import User
 
 
 class UserModelSerializer(serializers.ModelSerializer):
+    """User model serializer"""
     class Meta:
         model = User
         fields = ["email","username","first_name","last_name"]
@@ -19,7 +20,7 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 
 class UserSignupSerializer(serializers.Serializer):
-    
+    """User signup serializer"""
     email = serializers.EmailField(validators = [UniqueValidator(queryset=User.objects.all())])
     username = serializers.CharField(min_length=8,
                                     max_length=20,
@@ -32,6 +33,7 @@ class UserSignupSerializer(serializers.Serializer):
 
 
     def validate(self, attrs):
+        """Check if passwords are the same"""
         passw = attrs['password']
         passw_confirmation = attrs['password_confirmation']
 
@@ -42,6 +44,7 @@ class UserSignupSerializer(serializers.Serializer):
         return attrs
 
     def create(self, validated_data):
+        """Crete an instance of user"""
         validated_data.pop('password_confirmation')
         user = User.objects.create_user(**validated_data)
         return user

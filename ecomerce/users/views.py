@@ -16,17 +16,16 @@ from users.serializers import UserModelSerializer,UserSignupSerializer
 class UserViewSet(mixins.RetrieveModelMixin,
                 mixins.UpdateModelMixin,
                 GenericViewSet):
-    """Users view set
+    """Users view set.
     
     Handle login , signup , update and retrieve
     """
-
     queryset = User.objects.filter(is_active = True)
     serializer_class = UserModelSerializer
 
     @action(methods = ["POST"],detail = False)
     def signup(self,request):
-
+        """User signup"""
         serializer = UserSignupSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()

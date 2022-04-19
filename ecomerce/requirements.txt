@@ -2,3 +2,4 @@ django
 psycopg2-binary
 djangorestframework
 tzdata
+djangorestframework_simplejwt
